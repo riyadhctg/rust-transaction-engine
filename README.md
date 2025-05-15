@@ -28,13 +28,21 @@ It outputs final client account balances in CSV format.
 
 ---
 
-## 💭 Key Assumptions
+## 💭 Key Assumptions and Notes on Business Logic
 
 1. **Dispute** occurs only for **Depostis**
 2. **Transaction** data comes in chronologically
 3. **Amount** is not rounded but truncated at specific decimal precision (i.e., 4)
 4. For invalid transactions (e.g., invalid input type), it does not error out but logs the issue
+5. The below table summarizes how different transactions are treated
 
+| **Transaction Type** | **available Δ** | **held Δ**    | **total Δ**   | **Locks Account?** |
+|----------------------|------------------|---------------|---------------|--------------------|
+| Deposit              | +amount          | 0             | +amount       | ❌                 |
+| Withdrawal           | -amount          | 0             | -amount       | ❌                 |
+| Dispute              | -amount          | +amount       | 0             | ❌                 |
+| Resolve              | +amount          | -amount       | 0             | ❌                 |
+| Chargeback           | 0                | -amount       | -amount       | ✅                 |
 
 
 ---
